@@ -1,0 +1,72 @@
+# ============================================================
+# Ubuntu GNOME Desktop — Docker Compose
+# 适用于 FnOS 通过 HDMI/DP 输出桌面
+# ============================================================
+# 使用方式:
+#   docker compose build    # 构建镜像 (首次约 20-40 分钟)
+#   docker compose up -d    # 启动容器
+#   docker compose logs -f  # 查看日志
+# ============================================================
+
+services:
+  ubuntu-gnome:
+    build:
+      context: .
+      args:
+        UBUNTU_VERSION: "24.04"   # 如果拉不到改成 "24.04"
+        USER_UID: "1000"
+        USER_GID: "1000"
+    image: ubuntu-gnome-desktop:24.04
+    container_name: ubuntu-gnome
+    hostname: ubuntu-gnome
+
+    # ===== 必须的权限 =====
+    privileged: true            # 访问 /dev/dri, /dev/input, /dev/snd
+    network_mode: host
+    tty: true                   # 分配 TTY (systemd 容器需要)
+    stdin_open: true            # 保持标准输入打开
+
+    restart: unless-stopped
+    stop_signal: SIGRTMIN+3     # systemd 的标准停止信号
+    stop_grace_period: 60s      # 给 systemd 充足时间关闭服务
+
+    # ===== 环境变量 =====
+    environment:
+      # --- 桌面用户密码 (登陆 GNOME 用) ---
+      USER_PASSWORD: "123456"
+      HTTP_PROXY: "http://192.168.1.2:7890"
+      HTTPS_PROXY: "http://192.168.1.2:7890"
+      NO_PROXY: "localhost,127.0.0.1,192.168.1.0/24"
+      # --- 时区 ---
+      TZ: "Asia/Shanghai"
+      # --- 语言 ---
+      LANG: "zh_CN.UTF-8"
+      LANGUAGE: "zh_CN:zh"
+      LC_ALL: "zh_CN.UTF-8"
+
+    # ===== 设备挂载 =====
+    volumes:
+      # --- 持久化用户家目录 (可选, 但推荐) ---
+      - ./home:/home/jiang:rw
+      # --- systemd 需要 ---
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      # --- 设备热插拔检测 ---
+      - /run/udev:/run/udev:ro
+      - ./bluetooth-data:/var/lib/bluetooth/
+
+    # ===== tmpfs (必须, systemd 依赖) =====
+    tmpfs:
+      - /run:rw,nosuid,nodev,mode=755,size=256m
+      - /run/lock:rw,nosuid,nodev,noexec,mode=755,size=16m
+      - /tmp:rw,nosuid,nodev,mode=1777,size=2g
+
+    # ===== 共享内存 (GPU/图形需要) =====
+    shm_size: 2gb
+
+
+    # ===== 日志轮转 =====
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"

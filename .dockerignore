@@ -1,0 +1,9 @@
+.git
+.DS_Store
+._*
+home/
+bluetooth-data/
+*.bak
+.env
+.gitignore
+.gitattributes

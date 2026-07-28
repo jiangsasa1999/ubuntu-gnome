@@ -1,0 +1,41 @@
+# dconf 默认设置 — HDMI 桌面优化
+# 放在 /etc/dconf/db/local.d/00-hdmi-desktop
+
+[org/gnome/desktop/interface]
+# 字体缩放 (如果 4K 屏需要)
+# text-scaling-factor=1.5
+
+[org/gnome/desktop/session]
+# 空闲时不要锁屏
+idle-delay=uint32 0
+# 不要自动休眠
+lock-enabled=false
+
+[org/gnome/settings-daemon/plugins/power]
+# 关闭电源管理
+sleep-inactive-ac-timeout=0
+sleep-inactive-ac-type='nothing'
+power-button-action='nothing'
+
+[org/gnome/desktop/notifications]
+# 关闭烦人的通知
+show-banners=false
+
+[org/gnome/desktop/privacy]
+# 不要记录最近文件
+remember-recent-files=false
+remove-old-temp-files=false
+old-files-age=uint32 0
+
+[org/gnome/desktop/peripherals/touchpad]
+# 触摸板自然滚动
+natural-scroll=true
+tap-to-click=true
+
+[org/gnome/nautilus/preferences]
+# 文件管理器默认列表视图
+default-folder-viewer='list-view'
+
+[org/gnome/control-center]
+# 显示分辨率设置
+last-panel='display'

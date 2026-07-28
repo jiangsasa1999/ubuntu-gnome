@@ -1,0 +1,6 @@
+[User]
+Session=ubuntu
+Icon=/var/lib/AccountsService/icons/jiang
+Language=zh_CN.UTF-8
+XSession=ubuntu
+SystemAccount=false

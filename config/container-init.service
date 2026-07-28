@@ -1,0 +1,13 @@
+[Unit]
+Description=Ubuntu HDMI Desktop Container Initialization
+After=local-fs.target
+Before=gdm3.service display-manager.service
+
+[Service]
+Type=oneshot
+PassEnvironment=USER_PASSWORD TZ
+ExecStart=/usr/local/sbin/container-init.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
