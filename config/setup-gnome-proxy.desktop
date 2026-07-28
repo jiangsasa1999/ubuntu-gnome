@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Setup GNOME Proxy
-Exec=/usr/local/share/setup-gnome-proxy.sh
-NoDisplay=true
-X-GNOME-Autostart-enabled=true
